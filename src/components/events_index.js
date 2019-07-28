@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash'
+import { Link } from 'react-router-dom'
 
 import { readEvents } from '../actions'
 
-class EventsIndex extends Component{
+class EventsIndex extends Component {
   componentDidMount() {
     this.props.readEvents()
   }
@@ -21,6 +22,7 @@ class EventsIndex extends Component{
 
   render() {
     return (
+      <React.Fragment>
         <table>
           <thead>
             <tr>
@@ -31,9 +33,12 @@ class EventsIndex extends Component{
           </thead>
 
           <tbody>
-            { this.renderEvents() }
+            {this.renderEvents()}
           </tbody>
         </table>
+
+        <Link to="/events/new">New Event</Link>
+      </React.Fragment>
     )
   }
 }
