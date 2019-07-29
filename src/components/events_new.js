@@ -29,8 +29,8 @@ class EventsNew extends Component {
     render() {
         // pristineでボタンを押せない状態にできる
         // submittingはsubmitボタンが押されるとTrueになる
-        const { handleSubmit, pristine, submitting } = this.props
-        console.log(submitting)
+        // invalidはバリデーションエラーがあるとき、Trueになる
+        const { handleSubmit, pristine, submitting, invalid } = this.props
 
         return (
             <form onSubmit={handleSubmit(this.onSubmit)}>
@@ -40,7 +40,7 @@ class EventsNew extends Component {
                 </div>
 
                 <div>
-                    <input type="submit" value="Submit" disabled={pristine || submitting} />
+                    <input type="submit" value="Submit" disabled={pristine || submitting || invalid} />
                     <Link to="/" >Cancel</Link>
                 </div>
             </form>

@@ -11,6 +11,12 @@ class EventsShow extends Component {
         this.onSubmit = this.onSubmit.bind(this)
         this.onDeleteClick = this.onDeleteClick.bind(this)
     }
+
+componentDidMount() {
+    const { id } = this.props.match.params
+    if (id) this.props.getEvent(id)
+}
+
     renderField(field) {
         const { input, label, type, meta: {touched, error } } = field
 
@@ -29,14 +35,15 @@ class EventsShow extends Component {
     }
 
     async onSubmit(values) {
-        //await this.props.postEvent(values)
+        await this.props.putEvent(values)
         this.props.history.push('/')
     }
 
     render() {
         // pristineでボタンを押せない状態にできる
         // submittingはsubmitボタンが押されるとTrueになる
-        const { handleSubmit, pristine, submitting } = this.props
+        // invalidはバリデーションエラーがあるとき、Trueになる
+        const { handleSubmit, pristine, submitting, invalid } = this.props
 
         return (
             <form onSubmit={handleSubmit(this.onSubmit)}>
@@ -46,7 +53,7 @@ class EventsShow extends Component {
                 </div>
 
                 <div>
-                    <input type="submit" value="Submit" disabled={pristine || submitting} />
+                    <input type="submit" value="Submit" disabled={pristine || submitting || invalid} />
                     <Link to="/" >Cancel</Link>
                     <Link to="/" onClick={this.onDeleteClick} >Delete</Link>
                 </div>
@@ -63,6 +70,11 @@ const validate = values => {
 
     return errors
 }
-const mapDispatchProps = ({ deleteEvent })
+const mapStateToProps = (state, ownProps) => {
+    const event = state.events[ownProps.match.params.id]
+    return { initialValues: event, event }
+}
+const mapDispatchProps = ({ deleteEvent, getEvent, putEvent })
 
-export default connect(null, mapDispatchProps)(reduxForm({ validate, form: 'eventShowForm' })(EventsShow))
+// reduxFormのenableReinitializeをtrueにすると、initialValuesが変わる度にフォームがリセット
+export default connect(mapStateToProps, mapDispatchProps)(reduxForm({ validate, form: 'eventShowForm', enableReinitialize: true })(EventsShow))
